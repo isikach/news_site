@@ -1,5 +1,16 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
+
+from .models import Article
+
+
+AVAILABLE_SITES = {
+    'en.wikipedia.org': 5,
+    'www.washingtonpost.com': 9,
+    "news.mit.edu": 5
+}
 
 
 class Tag:
@@ -39,7 +50,8 @@ class GeneralScrapper:
                 continue
             if not p:
                 continue
-            all_text.append(p.text)
+            string = re.sub(r'\[.*?\]', '', p.text)
+            all_text.append(string)
         return "\n".join(all_text)
 
 
@@ -51,6 +63,14 @@ class GeneralScrapper:
             class_=self.title_tags.class_name
         )
         return row_title[0].text
+
+    def create_article(self) -> Article:
+        article = Article()
+        article.title = self.parse_title()
+        article.body = self.parse_article()
+        article.url = self.url
+        article.created_by = "from_url"
+        return article
 
 
 class WashingtonPostsScrapper(GeneralScrapper):
@@ -89,7 +109,7 @@ class MitScrapper(GeneralScrapper):
             self.href_tag = "hide-for-print"
 
 
-class WiredScrapper(GeneralScrapper):
+class WikipediaScrapper(GeneralScrapper):
     def __init__(
             self,
             url: str,
@@ -103,11 +123,17 @@ class WiredScrapper(GeneralScrapper):
             article_tags=article_tags,
             href_tag=href_tag)
         if title_tags is None:
-            self.title_tags = Tag(
-                "h1",
-                "BaseWrap-sc-gjQpdd BaseText-ewhhUZ ContentHeaderHed-NCyCC iUEiRd kKjIpR kctZMs"
-            )
+            self.title_tags = Tag("span", "mw-page-title-main")
         if article_tags is None:
-            self.article_tags = Tag("p", "paywall")
+            self.article_tags = Tag("p")
         if href_tag is None:
             self.href_tag = "hide-for-print"
+
+    def parse_title(self) -> str:
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        row_title = soup.find(
+            self.title_tags.tag_name,
+            class_=self.title_tags.class_name
+        )
+        return row_title.text

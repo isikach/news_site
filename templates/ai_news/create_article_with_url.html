@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>{{ object|yesno:"Update,Create" }} Article</h1>
+<form method="post">
+    {% csrf_token %}
+        <ul> You can add the article from the next sources:
+        <li>
+            <a href="https://en.wikipedia.org/">Wikipedia</a>
+        </li>
+        <li>
+            <a href="https://www.washingtonpost.com/">The Washington Post</a>
+        </li>
+        <li>
+            <a href="https://news.mit.edu/">MIT News</a>
+        </li>
+    </ul>
+    <a href="{% url 'ai_news:article-create-manually' %}"><-</a>
+    {{ form|crispy }}
+    {{ comment_formset.management_form }}
+
+    {% for form in comment_formset.forms %}
+        {{ form|crispy }}
+    {% endfor %}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

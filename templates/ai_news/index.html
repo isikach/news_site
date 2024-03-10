@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>AI News Home Page</h1>
+  <p>The most interesting content</p>
+  <h2>Dynamic content</h2>
+  <p>Our resource is:</p>
+  <ul>
+    <li><strong>Articles:</strong> {{ num_articles }}</li>
+    <li><strong>Added by:</strong> {{ num_publishers }} Redactors</li>
+    <li><strong>On:</strong> {{ num_topics }} Topics</li>
+  </ul>
+
+  <p>You have visited this page
+      {{ num_visits }} time{{ num_visits|pluralize }}.
+  </p>
+
+{% endblock %}
