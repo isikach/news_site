@@ -2,8 +2,8 @@
 
 {% block content %}
     <h1>Articles all
+        <a href="{% url 'ai_news:article-create-manually' %}" class="btn btn-primary link-to-page">+</a>
     </h1>
-  <a href="{% url 'ai_news:article-create-manually' %}" class="btn btn-primary link-to-page">+</a>
     {% if article_list %}
     <table class="table">
       <tr>
@@ -16,14 +16,22 @@
       </tr>
     {% for article in article_list %}
       <tr>
-        <td>{{ article.topic }}</td>
+        <td>
+          {% for topic in article.topic.all %}
+            {{ topic.title }}
+          {% endfor %}
+        </td>
         <td>{{ article.title }}</td>
         <td>
           {{ article.body|truncatechars_html:150 }}
           <a href="{% url 'ai_news:article-detail' pk=article.id%}">Read more</a>
         </td>
         <td>{{ article.pub_date }}</td>
-        <td>{{ article.publisher }}</td>
+        <td>
+          {% for publisher in article.publisher.all %}
+            {{ publisher.username }}
+          {% endfor %}
+        </td>
         <td> <a style="color: red"
                 href="{% url 'ai_news:article-delete' pk=article.id %}">
                 Delete

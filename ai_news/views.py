@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.urls import reverse_lazy, reverse
 
 from django.views import generic
@@ -37,41 +38,17 @@ class ArticleListView(generic.ListView):
 
 class CreateArticleWithUrlView(LoginRequiredMixin, CreateView):
     model = Article
-    form_class = ArticleWithUrlForm
     template_name = "ai_news/create_article_with_url.html"
-    success_url = reverse_lazy("article-list")
-
-    @transaction.atomic
-    def create_and_save_article(self, request, url_with_parameters, form):
-        if "en.wikipedia.org" in url_with_parameters:
-            scrapper = WikipediaScrapper(url_with_parameters)
-        elif "www.washingtonpost.com" in url_with_parameters:
-            scrapper = WashingtonPostsScrapper(url_with_parameters)
-        elif "news.mit.edu" in url_with_parameters:
-            scrapper = MitScrapper(url_with_parameters)
-        else:
-            return HttpResponse("Error: unknown source")
-
-        article = scrapper.create_article()
-        article.save()
-        return HttpResponse("Article created successfully")
-
-
-    def post(self, request):
-        url_with_parameters = request.POST.get('url')
-        if url_with_parameters:
-            form = ArticleWithUrlForm(request.POST)
-            if form.is_valid():
-                response = self.create_and_save_article(request, url_with_parameters, form)
-                return response
-        return HttpResponse("Помилка: статтю не можна створити")
-
+    success_url = reverse_lazy("ai_news:article-list")
+    form_class = ArticleWithUrlForm
 
 
 class CreateArticleManuallyForm(LoginRequiredMixin, CreateView):
     model = Article
     form_class = ArticleManuallyForm
+    success_url = reverse_lazy("ai_news:article-list")
     template_name = "ai_news/create_article_manually.html"
+
 
 
 class ArticleDetailView(DetailView):

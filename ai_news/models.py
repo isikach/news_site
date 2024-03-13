@@ -4,7 +4,7 @@ from django.db import models
 
 class Publisher(AbstractUser):
     date_of_registration = models.DateTimeField(auto_now_add=True)
-    pseudonym = models.CharField(max_length=255, unique=True)
+    pseudonym = models.CharField(max_length=255)
 
     def __str__(self):
         return self.pseudonym
@@ -26,7 +26,7 @@ class Article(models.Model):
     body = models.TextField(null=True, blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
     topic = models.ManyToManyField(Topic, blank=True, related_name="articles")
-    publisher = models.ManyToManyField(Publisher, related_name="articles")
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name="articles")
     url = models.URLField(default="", blank=True, null=True)
     created_by = models.CharField(max_length=10, choices=CHOICES, default="from_user")
 
@@ -41,4 +41,4 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.author.pseudonym}: {self.body}"
+        return f"{self.publisher.pseudonym}: {self.article}"

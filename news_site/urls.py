@@ -23,5 +23,5 @@ from ai_news.views import index
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("ai_news.urls", namespace="ai_news")),
-    path("registration/", include("django.contrib.auth.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
 ]

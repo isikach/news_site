@@ -3,8 +3,6 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from .models import Article
-
 
 AVAILABLE_SITES = {
     'en.wikipedia.org': 5,
@@ -52,7 +50,7 @@ class GeneralScrapper:
                 continue
             string = re.sub(r'\[.*?\]', '', p.text)
             all_text.append(string)
-        return "\n".join(all_text)
+        return "".join(all_text)
 
 
     def parse_title(self) -> str:
@@ -63,14 +61,6 @@ class GeneralScrapper:
             class_=self.title_tags.class_name
         )
         return row_title[0].text
-
-    def create_article(self) -> Article:
-        article = Article()
-        article.title = self.parse_title()
-        article.body = self.parse_article()
-        article.url = self.url
-        article.created_by = "from_url"
-        return article
 
 
 class WashingtonPostsScrapper(GeneralScrapper):
@@ -137,3 +127,10 @@ class WikipediaScrapper(GeneralScrapper):
             class_=self.title_tags.class_name
         )
         return row_title.text
+
+
+if "__main__" == __name__:
+    article = WikipediaScrapper("https://en.wikipedia.org/wiki/ML_(programming_language)")
+
+    print(article.parse_title() + "\n")
+    print(article.parse_article())
