@@ -28,9 +28,13 @@ class Article(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name="articles")
     url = models.URLField(default="", blank=True, null=True)
     created_by = models.CharField(max_length=10, choices=CHOICES, default="from_user")
+    likes = models.ManyToManyField(Publisher, blank=True, related_name="articles_liked")
 
     def __str__(self):
         return self.title
+
+    def total_likes(self):
+        return self.likes.count()
 
 
 class Comment(models.Model):

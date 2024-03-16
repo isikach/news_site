@@ -12,7 +12,8 @@ from .views import (
     PublisherCreateView,
     PublisherDetailView,
     TopicsListView,
-    TopicCreateView
+    TopicCreateView,
+    like_view
 )
 
 urlpatterns = [
@@ -35,7 +36,8 @@ urlpatterns = [
     path("publishers/create", PublisherCreateView.as_view(), name="publisher-create"),
     path("publishers/<int:pk>/", PublisherDetailView.as_view(), name="publisher-detail"),
     path("topics/", TopicsListView.as_view(), name="topic-list"),
-    path("topics/create/", TopicCreateView.as_view(), name="topic-create")
+    path("topics/create/", TopicCreateView.as_view(), name="topic-create"),
+    path("likes/<int:pk>/", like_view, name="article_like")
 ]
 
 app_name = "ai_news"

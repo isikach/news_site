@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.urls import reverse_lazy
-
-from django.shortcuts import render
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 from django.views import generic
+
 from .forms import (
     ArticleWithUrlForm,
     ArticleManuallyForm,
@@ -70,6 +70,14 @@ class CreateArticleManuallyForm(LoginRequiredMixin, generic.CreateView):
 class ArticleDetailView(generic.DetailView):
     model = Article
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ArticleDetailView, self).get_context_data()
+        stuff = get_object_or_404(Article, pk=self.kwargs["pk"])
+        total_likes = stuff.total_likes()
+        context["total_likes"] = total_likes
+        return context
+
+
 
 class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Article
@@ -107,3 +115,10 @@ class TopicCreateView(generic.CreateView):
     model = Topic
     form_class = CreateTopicForm
     success_url = reverse_lazy("ai_news:topic-list")
+
+
+def like_view(request, pk):
+    article = get_object_or_404(Article, id=request.POST.get("article_id"))
+    article.likes.add(request.user)
+    return HttpResponseRedirect(reverse("ai_news:article-detail", args=[str(pk)]))
+
