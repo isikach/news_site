@@ -42,13 +42,17 @@ class CreateArticleWithUrlView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("ai_news:article-list")
     form_class = ArticleWithUrlForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
 
 class CreateArticleManuallyForm(LoginRequiredMixin, CreateView):
     model = Article
     form_class = ArticleManuallyForm
     success_url = reverse_lazy("ai_news:article-list")
     template_name = "ai_news/create_article_manually.html"
-
 
 
 class ArticleDetailView(DetailView):

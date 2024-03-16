@@ -52,7 +52,6 @@ class GeneralScrapper:
             all_text.append(string)
         return "".join(all_text)
 
-
     def parse_title(self) -> str:
         response = requests.get(self.url)
         soup = BeautifulSoup(response.text, "html.parser")

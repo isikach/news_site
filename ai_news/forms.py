@@ -7,8 +7,8 @@ from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 
 class ArticleWithUrlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.publisher_user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.request = None
         self.fields['topic'] = forms.ModelMultipleChoiceField(
             queryset=Topic.objects.all(),
             widget=forms.CheckboxSelectMultiple
@@ -30,9 +30,11 @@ class ArticleWithUrlForm(forms.ModelForm):
         return url
 
     def save(self, commit=True):
+#        breakpoint()
         instance = super().save(commit=False)
         instance.title, instance.body = self.create_and_save_article()
-        instance.publisher_id = 1
+        instance.publisher = self.publisher_user
+#        breakpoint()
         if commit:
             instance.save()
             topics = self.cleaned_data['topic']
@@ -49,8 +51,6 @@ class ArticleWithUrlForm(forms.ModelForm):
         if "news.mit.edu" in url_with_parameters:
             scrapper = MitScrapper(url_with_parameters)
         return scrapper.parse_title(), scrapper.parse_article()
-
-
 
 
 class ArticleManuallyForm(forms.ModelForm):
