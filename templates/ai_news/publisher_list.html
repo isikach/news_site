@@ -4,10 +4,19 @@
   <h1>Our publishers</h1>
   {% if publisher_list %}
     <ul>
+      <li>
+        <a href="{% url "ai_news:publisher-detail" pk=user.id %}">
+          {{ user.username }}
+        </a>
+          
+      </li>
       {% for publisher in publisher_list%}
-        <li>
-          {{ publisher.username }}  {% if user == publisher %} (Me){% endif %}
-        </li>
+        {% if user != publisher %}  
+          <li>
+            <a href="{% url "ai_news:publisher-detail" pk=publisher.id %}">
+              {{ publisher.username }}</a>
+          </li>
+        {% endif %}
       {% endfor %}
     </ul>
   {% else %}

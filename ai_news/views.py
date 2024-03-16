@@ -10,7 +10,6 @@ from .forms import ArticleWithUrlForm, ArticleManuallyForm
 from .models import Article, Publisher, Topic
 
 
-
 def index(request):
     num_articles = Article.objects.count()
     num_publishers = Publisher.objects.count()
@@ -67,3 +66,11 @@ class PublishersListView(generic.ListView):
     model = Publisher
     template_name = "ai_news/publisher_list.html"
     paginate_by = 5
+
+
+class PublisherDetailView(generic.DetailView):
+    model = Publisher
+
+
+class TopicsListView(generic.ListView):
+    model = Topic

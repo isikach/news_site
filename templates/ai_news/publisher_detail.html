@@ -3,13 +3,13 @@
 {% block content %}
  <p><strong>
     {{ publisher.username }}.</strong>
-    With us from: {{ publisher.pub_date }}
   </p>
+  <strong>Articles created by:</strong>
+  <hr>
   {% for article in publisher.articles.all %}
-    <hr>
-    <p><strong>Id:</strong>{{ article.id }}
-      <strong>Article title:</strong> {{ article.title }}
-    </p>
+    <ul>
+      <li>{{ article.title }}</li>
+    </ul>
 
   {% empty %}
     <p>No articles...</p>

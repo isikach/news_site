@@ -7,7 +7,8 @@ from .views import (
     CreateArticleWithUrlView,
     CreateArticleManuallyForm,
     ArticleDeleteView,
-    PublishersListView
+    PublishersListView,
+    PublisherDetailView, TopicsListView
 )
 
 urlpatterns = [
@@ -24,8 +25,10 @@ urlpatterns = [
         name="article-create-with-url"
     ),
     path("articles/<int:pk>/", ArticleDetailView.as_view(), name="article-detail"),
-    path("publishers/", PublishersListView.as_view(), name="publisher-list"),
     path("articles/<int:pk>/delete/", ArticleDeleteView.as_view(), name="article-delete"),
+    path("publishers/", PublishersListView.as_view(), name="publisher-list"),
+    path("publishers/<int:pk>/", PublisherDetailView.as_view(), name="publisher-detail"),
+    path("topics/", TopicsListView.as_view(), name="topic-list")
 ]
 
 app_name = "ai_news"

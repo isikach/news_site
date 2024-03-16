@@ -8,6 +8,7 @@ from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 class ArticleWithUrlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.publisher_user = kwargs.pop('user')
+        self.scrap = None
         super().__init__(*args, **kwargs)
         self.fields['topic'] = forms.ModelMultipleChoiceField(
             queryset=Topic.objects.all(),
@@ -22,19 +23,22 @@ class ArticleWithUrlForm(forms.ModelForm):
         url = self.cleaned_data['url']
         if url.endswith("Main_Page"):
             raise ValidationError("You should choose an article")
-        url_part = url.split("/")[2]
+        url_parts = url.split("/")
+        if len(url_parts) < 3:
+            raise ValidationError("Invalid URL format")
+        url_part = url_parts[2]
         if url_part not in AVAILABLE_SITES:
-            raise ValidationError("You should choose available source")
+            raise ValidationError("You should choose an available source")
         if len(url_part) < AVAILABLE_SITES[url_part]:
             raise ValidationError(f"You should choose an article from {url_part}")
+        if not self.scrup().check_if_article():
+            raise ValidationError("Invalid URL. Choose an article")
         return url
 
     def save(self, commit=True):
-#        breakpoint()
         instance = super().save(commit=False)
-        instance.title, instance.body = self.create_and_save_article()
+        instance.title, instance.body = self.parse_title_and_body_article()
         instance.publisher = self.publisher_user
-#        breakpoint()
         if commit:
             instance.save()
             topics = self.cleaned_data['topic']
@@ -42,15 +46,18 @@ class ArticleWithUrlForm(forms.ModelForm):
                 instance.topic.add(topic)
         return instance
 
-    def create_and_save_article(self):
+    def scrup(self):
         url_with_parameters = self.cleaned_data["url"]
         if "en.wikipedia.org" in url_with_parameters:
-            scrapper = WikipediaScrapper(url_with_parameters)
-        if "www.washingtonpost.com" in url_with_parameters:
-            scrapper = WashingtonPostsScrapper(url_with_parameters)
-        if "news.mit.edu" in url_with_parameters:
-            scrapper = MitScrapper(url_with_parameters)
-        return scrapper.parse_title(), scrapper.parse_article()
+            self.scrup = WikipediaScrapper(url_with_parameters)
+        elif "www.washingtonpost.com" in url_with_parameters:
+            self.scrup = WashingtonPostsScrapper(url_with_parameters)
+        elif "news.mit.edu" in url_with_parameters:
+            self.scrup = MitScrapper(url_with_parameters)
+        return self.scrup
+
+    def parse_title_and_body_article(self):
+        return self.scrup.parse_title(), self.scrup.parse_article()
 
 
 class ArticleManuallyForm(forms.ModelForm):

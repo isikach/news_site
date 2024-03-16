@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Topics what we has</h1>
+  {% if topic_list %}
+    <ul>
+      {% for topic in topic_list%}
+        <li>
+          {{ topic.title }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no topics in blog</p>
+  {% endif %}
+{% endblock %}
