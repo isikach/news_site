@@ -15,7 +15,9 @@
           <li><a href="{% url 'ai_news:article-delete' pk=article.pk %}">Delete</a></li>
         </ul>
       {% empty %}
-        <li>No articles found.</li>
+        <li>No articles found.
+        <a href="{% url 'ai_news:article-create-manually' %}" class="btn btn-primary link-to-page">Just add...</a>
+        </li>
       {% endfor %}
     </ul>
   {% else %}

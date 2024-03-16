@@ -103,3 +103,12 @@ class PublisherCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Publisher
         fields = UserCreationForm.Meta.fields
+
+
+class ArticleSearchForm(forms.Form):
+    body = forms.CharField(
+        max_length=255,
+        required=False,
+        label='',
+        widget=forms.TextInput(attrs={'placeholder': 'Write here...'})
+    )

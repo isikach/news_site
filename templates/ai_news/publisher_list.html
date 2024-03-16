@@ -1,25 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Our publishers</h1>
-  {% if publisher_list %}
+<h1>Our publishers</h1>
+{% if publisher_list %}
     <ul>
-      <li>
-        <a href="{% url "ai_news:publisher-detail" pk=user.id %}">
-          {{ user.username }}
-        </a>
-          
-      </li>
-      {% for publisher in publisher_list%}
-        {% if user != publisher %}  
-          <li>
-            <a href="{% url "ai_news:publisher-detail" pk=publisher.id %}">
-              {{ publisher.username }}</a>
-          </li>
+        {% if request.user.is_authenticated %}
+            <li>
+                <a href="{% url 'ai_news:publisher-detail' pk=request.user.id %}">
+                    {{ request.user.username }}
+                </a>
+            </li>
         {% endif %}
-      {% endfor %}
+
+        {% for publisher in publisher_list %}
+            {% if request.user != publisher %}
+                <li>
+                    <a href="{% url 'ai_news:publisher-detail' pk=publisher.id %}">
+                        {{ publisher.username }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
-  {% else %}
-    <p>There are no publishers in blog</p>
-  {% endif %}
+{% endif %}
 {% endblock %}

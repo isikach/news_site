@@ -40,4 +40,4 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.publisher.pseudonym}: {self.article}"
+        return f"{self.publisher.username}: {self.article}"
