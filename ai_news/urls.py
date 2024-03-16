@@ -5,7 +5,9 @@ from .views import (
     ArticleListView,
     ArticleDetailView,
     CreateArticleWithUrlView,
-    CreateArticleManuallyForm, ArticleDeleteView,
+    CreateArticleManuallyForm,
+    ArticleDeleteView,
+    PublishersListView
 )
 
 urlpatterns = [
@@ -22,6 +24,7 @@ urlpatterns = [
         name="article-create-with-url"
     ),
     path("articles/<int:pk>/", ArticleDetailView.as_view(), name="article-detail"),
+    path("publishers/", PublishersListView.as_view(), name="publisher-list"),
     path("articles/<int:pk>/delete/", ArticleDeleteView.as_view(), name="article-delete"),
 ]
 

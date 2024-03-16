@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+ <p><strong>
+    {{ publisher.username }}.</strong>
+    With us from: {{ publisher.pub_date }}
+  </p>
+  {% for article in publisher.articles.all %}
+    <hr>
+    <p><strong>Id:</strong>{{ article.id }}
+      <strong>Article title:</strong> {{ article.title }}
+    </p>
+
+  {% empty %}
+    <p>No articles...</p>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Our publishers</h1>
+  {% if publisher_list %}
+    <ul>
+      {% for publisher in publisher_list%}
+        <li>
+          {{ publisher.username }}  {% if user == publisher %} (Me){% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no publishers in blog</p>
+  {% endif %}
+{% endblock %}
