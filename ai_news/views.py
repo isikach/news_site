@@ -1,12 +1,10 @@
-from msilib.schema import ListView
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views import generic
-from .forms import ArticleWithUrlForm, ArticleManuallyForm
+from .forms import ArticleWithUrlForm, ArticleManuallyForm, CreateTopicForm, PublisherCreationForm
 from .models import Article, Publisher, Topic
 
 
@@ -15,14 +13,10 @@ def index(request):
     num_publishers = Publisher.objects.count()
     num_topics = Topic.objects.count()
 
-    num_visits = request.session.get("num_visits", 0)
-    request.session["num_visits"] = num_visits + 1
-
     context = {
         "num_articles": num_articles,
         "num_publisher": num_publishers,
         "num_topics": num_topics,
-        "num_visits": num_visits + 1,
     }
 
     return render(request, "ai_news/index.html", context=context)
@@ -30,6 +24,7 @@ def index(request):
 
 class ArticleListView(generic.ListView):
     model = Article
+    queryset = Article.objects.prefetch_related("articles")
     template_name = "ai_news/article_list.html"
     paginate_by = 5
 
@@ -57,9 +52,15 @@ class ArticleDetailView(generic.DetailView):
     model = Article
 
 
-class ArticleDeleteView(generic.DeleteView):
+class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Article
     success_url = reverse_lazy("ai_news:article-list")
+
+class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Article
+    success_url = reverse_lazy("ai_news:article-list")
+    fields = ["title", "body"]
+    template_name = "ai_news/create_article_manually.html"
 
 
 class PublishersListView(generic.ListView):
@@ -68,9 +69,22 @@ class PublishersListView(generic.ListView):
     paginate_by = 5
 
 
+class PublisherCreateView(generic.CreateView):
+    form_class = PublisherCreationForm
+    template_name = "ai_news/publisher_form.html"
+
+
+
+
 class PublisherDetailView(generic.DetailView):
     model = Publisher
 
 
 class TopicsListView(generic.ListView):
     model = Topic
+
+
+class TopicCreateView(generic.CreateView):
+    model = Topic
+    form_class = CreateTopicForm
+    success_url = reverse_lazy("ai_news:topic-list")

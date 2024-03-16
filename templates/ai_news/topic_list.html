@@ -2,6 +2,7 @@
 
 {% block content %}
   <h1>Topics what we has</h1>
+  <a href="{% url 'ai_news:topic-create' %}" class="btn btn-primary link-to-page">+</a>
   {% if topic_list %}
     <ul>
       {% for topic in topic_list%}

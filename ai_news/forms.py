@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Article, Topic
+from django.contrib.auth.forms import UserCreationForm
+
+from .models import Article, Topic, Publisher
 from .scrapper import AVAILABLE_SITES
 from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 
@@ -21,6 +23,8 @@ class ArticleWithUrlForm(forms.ModelForm):
 
     def clean_url(self):
         url = self.cleaned_data['url']
+        if Article.objects.filter(url=url).exists():
+            raise forms.ValidationError("This url already exists.")
         if url.endswith("Main_Page"):
             raise ValidationError("You should choose an article")
         url_parts = url.split("/")
@@ -81,3 +85,21 @@ class ArticleManuallyForm(forms.ModelForm):
             for topic in topics:
                 instance.topic.add(topic)
         return instance
+
+
+class CreateTopicForm(forms.ModelForm):
+    class Meta:
+        model = Topic
+        fields = ['title',]
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if Topic.objects.filter(title=title).exists():
+            raise forms.ValidationError("This topic already exists.")
+        return title
+
+
+class PublisherCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Publisher
+        fields = UserCreationForm.Meta.fields

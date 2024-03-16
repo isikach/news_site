@@ -3,16 +3,12 @@
 {% block content %}
   <h1>AI News Home Page</h1>
   <p>The most interesting content</p>
-  <h2>Dynamic content</h2>
-  <p>Our resource is:</p>
+  <h2>General info about resource</h2>
+  <p>We have for you here:</p>
   <ul>
-    <li><strong>Articles:</strong> {{ num_articles }}</li>
-    <li><strong>Added by:</strong> {{ num_publishers }} Redactors</li>
-    <li><strong>On:</strong> {{ num_topics }} Topics</li>
+    <li><strong>Articles: {{ num_articles }}</strong> </li>
+    <li><strong>Added by: {{ num_publisher }} Publishers</strong> </li>
+    <li><strong>On: {{ num_topics }} Topics</strong></li>
   </ul>
-
-  <p>You have visited this page
-      {{ num_visits }} time{{ num_visits|pluralize }}.
-  </p>
 
 {% endblock %}

@@ -12,7 +12,6 @@
         <th>Text</th>
         <th>Publishing date</th>
         <th>Publisher</th>
-        <th>Delete</th>
       </tr>
     {% for article in article_list %}
       <tr>
@@ -29,11 +28,6 @@
         <td>{{ article.pub_date }}</td>
         <td>
             {{ article.publisher.username }}
-        </td>
-        <td> <a style="color: red"
-                href="{% url 'ai_news:article-delete' pk=article.id %}">
-                Delete
-              </a>
         </td>
       </tr>
     {% endfor %}

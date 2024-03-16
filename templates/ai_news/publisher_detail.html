@@ -1,17 +1,31 @@
+<!-- publisher_detail.html -->
 {% extends "base.html" %}
 
 {% block content %}
- <p><strong>
-    {{ publisher.username }}.</strong>
-  </p>
-  <strong>Articles created by:</strong>
-  <hr>
-  {% for article in publisher.articles.all %}
-    <ul>
-      <li>{{ article.title }}</li>
-    </ul>
+  <h1>{{ publisher.pseudonym }}</h1>
+  <p>Date of registration: {{ publisher.date_of_registration }}</p>
 
-  {% empty %}
-    <p>No articles...</p>
-  {% endfor %}
+  {% if user.is_authenticated and publisher == user %}
+    <p><strong>My articles:</strong></p>
+    <ul>
+      {% for article in publisher.articles.all %}
+        <li><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></li>
+        <ul>
+          <li><a href="{% url 'ai_news:article-update' pk=article.pk %}">Update</a></li>
+          <li><a href="{% url 'ai_news:article-delete' pk=article.pk %}">Delete</a></li>
+        </ul>
+      {% empty %}
+        <li>No articles found.</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p><strong>Articles by {{ publisher.pseudonym }}:</strong></p>
+    <ul>
+      {% for article in publisher.articles.all %}
+        <li><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></li>
+      {% empty %}
+        <li>No articles found.</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}
