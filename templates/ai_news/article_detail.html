@@ -19,7 +19,13 @@
   <form action="{% url "ai_news:article_like" article.id %}"
         method="post"> 
     {% csrf_token %}
-    <button type="submit" name="article_id" value="{{ article.id }}">👍</button> {{ total_likes }}
+    <button type="submit" name="article_id" value="{{ article.id }}">
+      {% if user in article.likes.all %}
+      ❤️
+      {% else %}
+      🤍
+      {% endif %}
+    </button> {{ total_likes }}
   </form>
   
 {% endblock %}

@@ -78,7 +78,6 @@ class ArticleDetailView(generic.DetailView):
         return context
 
 
-
 class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Article
     success_url = reverse_lazy("ai_news:article-list")
@@ -118,7 +117,10 @@ class TopicCreateView(generic.CreateView):
 
 
 def like_view(request, pk):
-    article = get_object_or_404(Article, id=request.POST.get("article_id"))
-    article.likes.add(request.user)
+    article = get_object_or_404(Article, id=pk)
+    if article.likes.filter(id=request.user.id).exists():
+        article.likes.remove(request.user)
+    else:
+        article.likes.add(request.user)
+    article.save()
     return HttpResponseRedirect(reverse("ai_news:article-detail", args=[str(pk)]))
-

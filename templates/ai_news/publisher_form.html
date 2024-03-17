@@ -3,10 +3,9 @@
 
 {% block content %}
   <h1>Create publisher</h1>
+  {% csrf_token %}
   <form action="" method="post" novalidate>
-    {% csrf_token %}
     {{ form|crispy }}
-
     <input type="submit" value="Submit" class="btn btn-primary">
   </form>
 {% endblock %}
