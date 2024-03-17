@@ -9,20 +9,22 @@ from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 
 class ArticleWithUrlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.publisher_user = kwargs.pop('user')
+        self.publisher_user = kwargs.pop("user")
         self.scrap = None
         super().__init__(*args, **kwargs)
-        self.fields['topic'] = forms.ModelMultipleChoiceField(
-            queryset=Topic.objects.all(),
-            widget=forms.CheckboxSelectMultiple
+        self.fields["topic"] = forms.ModelMultipleChoiceField(
+            queryset=Topic.objects.all(), widget=forms.CheckboxSelectMultiple
         )
 
     class Meta:
         model = Article
-        fields = ['topic', 'url',]
+        fields = [
+            "topic",
+            "url",
+        ]
 
     def clean_url(self):
-        url = self.cleaned_data['url']
+        url = self.cleaned_data["url"]
         if Article.objects.filter(url=url).exists():
             raise forms.ValidationError("This url already exists.")
         if url.endswith("Main_Page"):
@@ -45,7 +47,7 @@ class ArticleWithUrlForm(forms.ModelForm):
         instance.publisher = self.publisher_user
         if commit:
             instance.save()
-            topics = self.cleaned_data['topic']
+            topics = self.cleaned_data["topic"]
             for topic in topics:
                 instance.topic.add(topic)
         return instance
@@ -66,23 +68,26 @@ class ArticleWithUrlForm(forms.ModelForm):
 
 class ArticleManuallyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.publisher_user = kwargs.pop('user')
+        self.publisher_user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
-        self.fields['topic'] = forms.ModelMultipleChoiceField(
-            queryset=Topic.objects.all(),
-            widget=forms.CheckboxSelectMultiple
+        self.fields["topic"] = forms.ModelMultipleChoiceField(
+            queryset=Topic.objects.all(), widget=forms.CheckboxSelectMultiple
         )
 
     class Meta:
         model = Article
-        fields = ['topic', 'title', "body",]
+        fields = [
+            "topic",
+            "title",
+            "body",
+        ]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.publisher_id = self.publisher_user.id
         if commit:
             instance.save()
-            topics = self.cleaned_data['topic']
+            topics = self.cleaned_data["topic"]
             for topic in topics:
                 instance.topic.add(topic)
         return instance
@@ -91,10 +96,12 @@ class ArticleManuallyForm(forms.ModelForm):
 class CreateTopicForm(forms.ModelForm):
     class Meta:
         model = Topic
-        fields = ['title',]
+        fields = [
+            "title",
+        ]
 
     def clean_title(self):
-        title = self.cleaned_data['title']
+        title = self.cleaned_data["title"]
         if Topic.objects.filter(title=title).exists():
             raise forms.ValidationError("This topic already exists.")
         return title
@@ -110,19 +117,21 @@ class ArticleSearchForm(forms.Form):
     body = forms.CharField(
         max_length=255,
         required=False,
-        label='',
-        widget=forms.TextInput(attrs={'placeholder': 'Write here...'})
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Write here..."}),
     )
 
 
 class CommentCreationForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["comment",]
+        fields = [
+            "comment",
+        ]
 
     def __init__(self, *args, **kwargs):
-        self.publisher = kwargs.pop('publisher', None)
-        self.article = kwargs.pop('article', None)
+        self.publisher = kwargs.pop("publisher", None)
+        self.article = kwargs.pop("article", None)
         super(CommentCreationForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):

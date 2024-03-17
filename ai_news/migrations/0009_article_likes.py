@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ai_news', '0008_remove_publisher_pseudonym'),
+        ("ai_news", "0008_remove_publisher_pseudonym"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
-            name='likes',
-            field=models.ManyToManyField(blank=True, related_name='articles_liked', to=settings.AUTH_USER_MODEL),
+            model_name="article",
+            name="likes",
+            field=models.ManyToManyField(
+                blank=True, related_name="articles_liked", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

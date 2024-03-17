@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ai_news', '0002_rename_body_comment_comment_and_more'),
+        ("ai_news", "0002_rename_body_comment_comment_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='article',
-            name='url',
-            field=models.URLField(blank=True, default='', null=True),
+            model_name="article",
+            name="url",
+            field=models.URLField(blank=True, default="", null=True),
         ),
     ]

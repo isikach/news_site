@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.test import TestCase
 
-if __name__=='__main__':
+if __name__ == "__main__":
     from ai_news.forms import ArticleWithUrlForm
     from ai_news.views import CreateArticleWithUrlView
 
@@ -10,7 +10,7 @@ if __name__=='__main__':
 
     form_data = {
         "url": "https://en.wikipedia.org/wiki/Artificial_intelligence",
-        "topic": "Google"
+        "topic": "Google",
     }
     form = ArticleWithUrlForm(data=form_data)
 

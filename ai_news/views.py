@@ -24,7 +24,7 @@ def index(request):
         "num_articles": num_articles,
         "num_publisher": num_publishers,
         "num_topics": num_topics,
-        "all_topics": all_topics
+        "all_topics": all_topics,
     }
 
     return render(request, "ai_news/index.html", context=context)
@@ -37,9 +37,7 @@ class ArticleListView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
         body = self.request.GET.get("body", "")
-        context["search_form"] = ArticleSearchForm(
-            initial={"body": body}
-        )
+        context["search_form"] = ArticleSearchForm(initial={"body": body})
         return context
 
     def get_queryset(self):
@@ -124,7 +122,7 @@ def like_view(request, pk):
     else:
         article.likes.add(request.user)
     article.save()
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 class AddCommentView(LoginRequiredMixin, generic.CreateView):
@@ -143,8 +141,10 @@ class AddCommentView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_article(self):
-        article_id = self.kwargs.get('pk')
+        article_id = self.kwargs.get("pk")
         return get_object_or_404(Article, pk=article_id)
 
     def get_success_url(self):
-        return reverse_lazy('ai_news:article-detail', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse_lazy(
+            "ai_news:article-detail", kwargs={"pk": self.kwargs.get("pk")}
+        )

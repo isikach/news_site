@@ -8,18 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ai_news', '0006_alter_publisher_pseudonym'),
+        ("ai_news", "0006_alter_publisher_pseudonym"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='article',
-            name='publisher',
+            model_name="article",
+            name="publisher",
         ),
         migrations.AddField(
-            model_name='article',
-            name='publisher',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='articles', to=settings.AUTH_USER_MODEL),
+            model_name="article",
+            name="publisher",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="articles",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]
