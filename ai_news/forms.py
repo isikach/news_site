@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Article, Topic, Publisher
+from .models import Article, Topic, Publisher, Comment
 from .scrapper import AVAILABLE_SITES
 from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 
@@ -112,3 +112,22 @@ class ArticleSearchForm(forms.Form):
         label='',
         widget=forms.TextInput(attrs={'placeholder': 'Write here...'})
     )
+
+
+class CommentCreationForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["comment",]
+
+    def __init__(self, *args, **kwargs):
+        self.publisher = kwargs.pop('publisher', None)
+        self.article = kwargs.pop('article', None)
+        super(CommentCreationForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super(CommentCreationForm, self).save(commit=False)
+        instance.publisher = self.publisher
+        instance.article = self.article
+        if commit:
+            instance.save()
+        return instance

@@ -9,20 +9,22 @@ from .forms import (
     ArticleManuallyForm,
     ArticleSearchForm,
     CreateTopicForm,
+    CommentCreationForm,
     PublisherCreationForm,
 )
-from .models import Article, Publisher, Topic
+from .models import Article, Publisher, Topic, Comment
 
 
 def index(request):
     num_articles = Article.objects.count()
     num_publishers = Publisher.objects.count()
     num_topics = Topic.objects.count()
-
+    all_topics = Topic.objects.all()
     context = {
         "num_articles": num_articles,
         "num_publisher": num_publishers,
         "num_topics": num_topics,
+        "all_topics": all_topics
     }
 
     return render(request, "ai_news/index.html", context=context)
@@ -106,10 +108,6 @@ class PublisherDetailView(generic.DetailView):
     model = Publisher
 
 
-class TopicsListView(generic.ListView):
-    model = Topic
-
-
 class TopicCreateView(generic.CreateView):
     model = Topic
     form_class = CreateTopicForm
@@ -124,3 +122,26 @@ def like_view(request, pk):
         article.likes.add(request.user)
     article.save()
     return HttpResponseRedirect(reverse("ai_news:article-detail", args=[str(pk)]))
+
+
+class AddCommentView(LoginRequiredMixin, generic.CreateView):
+    model = Comment
+    form_class = CommentCreationForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["publisher"] = self.request.user
+        kwargs["article"] = self.get_article()
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.publisher = self.request.user
+        form.instance.article = self.get_article()
+        return super().form_valid(form)
+
+    def get_article(self):
+        article_id = self.kwargs.get('pk')
+        return get_object_or_404(Article, pk=article_id)
+
+    def get_success_url(self):
+        return reverse_lazy('ai_news:article-detail', kwargs={'pk': self.kwargs.get('pk')})

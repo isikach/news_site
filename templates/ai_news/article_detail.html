@@ -27,5 +27,20 @@
       {% endif %}
     </button> {{ total_likes }}
   </form>
+  <br>
+  <h2>Comments</h2>
+  {% if not article.comments.all %}
+    <p> 
+      Not comments yet...
+      <a href="{% url "ai_news:comment-create" article.id %}">Add first comment</a>
+    </p>
+  {% else %}
+    {% for comment in article.comments.all %}
+      <p><strong>{{ comment.publisher.username }} ({{ comment.pub_date }}) </strong>
+      {{ comment.comment }}</p>
+    {% endfor %}
+     <a href="{% url "ai_news:comment-create" article.id %}">Add comment</a>
+  {% endif %}
+    
   
 {% endblock %}

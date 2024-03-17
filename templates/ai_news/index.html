@@ -10,5 +10,14 @@
     <li><strong>Added by: {{ num_publisher }} Publishers</strong> </li>
     <li><strong>On: {{ num_topics }} Topics</strong></li>
   </ul>
+  <p>
+  Topics, what you can read here: <br>
+  {% for topic in all_topics %}
+    {{ topic.title }}
+  {% endfor %}
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'ai_news:topic-create' %}" class="btn btn-primary link-to-page">Add Topic</a>
+  {% endif %}
+  </p>
 
 {% endblock %}
