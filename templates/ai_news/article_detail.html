@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
 
 {% block content %}
   <h1>
@@ -9,9 +9,9 @@
   </p>
   <div>
     {{ article.body }}
-    <br>
+    <br><br><br>
     {% if article.url %}
-      <a href = {{article.url}}>{{article.url}}</a>
+      <strong> Source: </strong><a href = {{article.url}}> {{article.url}}</a>
     {% endif %}
   </div>
   <br/><br/>
@@ -28,19 +28,30 @@
     </button> {{ total_likes }}
   </form>
   <br>
-  <h2>Comments</h2>
+  <h2><strong>Comments</strong></h2>
   {% if not article.comments.all %}
     <p> 
       Not comments yet...
-      <a href="{% url "ai_news:comment-create" article.id %}">Add first comment</a>
+      <button type="button" class="btn btn-primary">
+        <a href="{% url "ai_news:comment-create" article.id %}">Add first comment</a>
+      </button>
     </p>
   {% else %}
     {% for comment in article.comments.all %}
-      <p><strong>{{ comment.publisher.username }} ({{ comment.pub_date }}) </strong>
-      {{ comment.comment }}</p>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ comment.publisher.username }}</h5>
+            <p class="card-text">{{ comment.comment }}</p>
+            <p class="card-text">{{ comment.pub_date }}</p>
+        </div>
+      </div>
     {% endfor %}
+    <br>
+    <button type="button" class="btn btn-primary">
      <a href="{% url "ai_news:comment-create" article.id %}">Add comment</a>
+    </button>
   {% endif %}
     
   
 {% endblock %}
+

@@ -1,5 +1,5 @@
 <!-- publisher_detail.html -->
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
 
 {% block content %}
   <h1>{{ publisher.pseudonym }}</h1>
@@ -7,21 +7,47 @@
 
   {% if user.is_authenticated and publisher == user %}
     <p><strong>My articles:</strong></p>
-    <ul>
-      {% for article in publisher.articles.all %}
-        <li><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></li>
-        <ul>
-          <li><a href="{% url 'ai_news:article-update' pk=article.pk %}">Update</a></li>
-          <li><a href="{% url 'ai_news:article-delete' pk=article.pk %}">Delete</a></li>
-        </ul>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+                
+                  <th scope="col">Title</th>
+                  <th scope="col">Update</th>
+                  <th scope="col">Delete</th>
+                
+            </tr>
+          </thead>
+        <tbody>
+        {% for article in publisher.articles.all %}
+            <tbody>
+    <tr>
+      <td>
+        <a href="{% url 'ai_news:article-detail' pk=article.pk %}">
+          <strong>{{ article.title }}</strong>
+        </a>
+      </td>
+      <td>
+          <button type="button" class="btn btn-info">
+            <a href="{% url 'ai_news:article-update' pk=article.pk %}">Update</a>
+          </button>
+      </td>
+      <td>
+        <button type="button" class="btn btn-danger">
+          <a href="{% url 'ai_news:article-delete' pk=article.pk %}">Delete</a>
+        </button>
+      </td>
+    </tr>
+
       {% empty %}
         <li>No articles found.
         <a href="{% url 'ai_news:article-create-manually' %}" class="btn btn-primary link-to-page">Just add...</a>
         </li>
       {% endfor %}
-    </ul>
+        </tbody>
+    </table>
+
   {% else %}
-    <p><strong>Articles by {{ publisher.pseudonym }}:</strong></p>
+    <p><strong>Articles by {{ publisher.username }}:</strong></p>
     <ul>
       {% for article in publisher.articles.all %}
         <li><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></li>

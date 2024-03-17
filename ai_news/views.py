@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.views import generic
 
@@ -33,7 +33,6 @@ def index(request):
 class ArticleListView(generic.ListView):
     model = Article
     template_name = "ai_news/article_list.html"
-    paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
@@ -68,6 +67,11 @@ class CreateArticleManuallyForm(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("ai_news:article-list")
     template_name = "ai_news/create_article_manually.html"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
 
 class ArticleDetailView(generic.DetailView):
     model = Article
@@ -95,7 +99,6 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
 class PublishersListView(generic.ListView):
     model = Publisher
     template_name = "ai_news/publisher_list.html"
-    paginate_by = 5
 
 
 class PublisherCreateView(generic.CreateView):
@@ -111,7 +114,7 @@ class PublisherDetailView(generic.DetailView):
 class TopicCreateView(generic.CreateView):
     model = Topic
     form_class = CreateTopicForm
-    success_url = reverse_lazy("ai_news:topic-list")
+    success_url = reverse_lazy("ai_news:index")
 
 
 def like_view(request, pk):
@@ -121,7 +124,7 @@ def like_view(request, pk):
     else:
         article.likes.add(request.user)
     article.save()
-    return HttpResponseRedirect(reverse("ai_news:article-detail", args=[str(pk)]))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 class AddCommentView(LoginRequiredMixin, generic.CreateView):

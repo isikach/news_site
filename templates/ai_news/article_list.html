@@ -1,44 +1,56 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <form method="get" action="" class="form-inline">
-    {{ search_form|crispy }}  
-    <input type="submit" value="🔍">
-  </form>
+<form method="get" action="" class="form-inline">
+  <div class="form-group flex-grow-1">
+    {{ search_form.body }}
+  <button type="submit" class="btn btn-primary">🔍</button>
+    </div>
+</form>
     <h1>Articles all
         <a href="{% url 'ai_news:article-create-manually' %}" class="btn btn-primary link-to-page">+</a>
     </h1>
-    {% if article_list %}
-    <table class="table">
-      <tr>
-        <th>Topic</th>
-        <th>Title</th>
-        <th>Text</th>
-        <th>Publishing date</th>
-        <th>Publisher</th>
-      </tr>
-    {% for article in article_list %}
-      <tr>
-        <td>
-          {% for topic in article.topic.all %}
-            {{ topic.title }}
-          {% endfor %}
-        </td>
-        <td>{{ article.title }}</td>
-        <td>
-          {{ article.body|truncatechars_html:150 }}
-          <a href="{% url 'ai_news:article-detail' pk=article.id%}">Read more</a>
-        </td>
-        <td>{{ article.pub_date }}</td>
-        <td>
-            {{ article.publisher.username }}
-        </td>
-      </tr>
-    {% endfor %}
-
-    </table>
-    {% else %}
-      <p>There are no articles.</p>
+<div class="container">
+  {% for article in article_list %}
+    {% if forloop.counter0|divisibleby:3 %}
+      <div class="row">
     {% endif %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ article.title }}</h5>
+          <p class="card-text">{{ article.body|truncatechars_html:150 }}</p>
+        </div>
+        <div class="card-body">
+          {% for topic in article.topic.all %}
+            <strong>{{ topic.title }}</strong>
+            <br>
+          {% endfor %}
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <small class="text-muted">
+            <form action="{% url 'ai_news:article_like' article.id %}" method="post"> 
+              {% csrf_token %}
+              <button type="submit" name="article_id" value="{{ article.id }}">
+                {% if user in article.likes.all %}
+                  ❤️
+                {% else %}
+                  🤍
+                {% endif %}
+              </button> {{ article.total_likes }}
+            </form>
+          </small>
+          <button type="button" class="btn btn-primary">
+            <a href="{% url 'ai_news:article-detail' pk=article.id %}">Read more</a>
+          </button>
+        </div>
+      </div>
+    </div>
+    {% if forloop.last or forloop.counter0|add:1|divisibleby:3 %}
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+  
 {% endblock %}

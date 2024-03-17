@@ -1,26 +1,44 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
 
 {% block content %}
 <h1>Our publishers</h1>
-{% if publisher_list %}
-    <ul>
-        {% if request.user.is_authenticated %}
-            <li>
-                <a href="{% url 'ai_news:publisher-detail' pk=request.user.id %}">
-                    {{ request.user.username }}
-                </a>
-            </li>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">Date of registration</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if publisher_list %}
+      {% if request.user.is_authenticated %}
+        <tr>
+          <td>
+            <a href="{% url 'ai_news:publisher-detail' pk=request.user.id %}">
+              <strong>{{ request.user.username }}</strong>
+            </a>
+          </td>
+          <td>
+            {{ request.user.date_of_registration }}      
+          </td>
+        </tr>
+      {% endif %}
+      
+      {% for publisher in publisher_list %}
+        {% if request.user != publisher %}
+          <tr>
+            <td>
+              <a href="{% url 'ai_news:publisher-detail' pk=publisher.id %}">
+                {{ publisher.username }}
+              </a>
+            </td>
+            <td>
+              {{ publisher.date_of_registration }}
+            </td>
+          </tr>
         {% endif %}
-
-        {% for publisher in publisher_list %}
-            {% if request.user != publisher %}
-                <li>
-                    <a href="{% url 'ai_news:publisher-detail' pk=publisher.id %}">
-                        {{ publisher.username }}
-                    </a>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-{% endif %}
+      {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
 {% endblock %}

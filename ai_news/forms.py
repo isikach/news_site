@@ -66,6 +66,7 @@ class ArticleWithUrlForm(forms.ModelForm):
 
 class ArticleManuallyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.publisher_user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
         self.fields['topic'] = forms.ModelMultipleChoiceField(
             queryset=Topic.objects.all(),
@@ -78,7 +79,7 @@ class ArticleManuallyForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.publisher_id = 1
+        instance.publisher_id = self.publisher_user.id
         if commit:
             instance.save()
             topics = self.cleaned_data['topic']
