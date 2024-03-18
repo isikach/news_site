@@ -27,18 +27,24 @@ class ArticleWithUrlForm(forms.ModelForm):
         url = self.cleaned_data["url"]
         if Article.objects.filter(url=url).exists():
             raise forms.ValidationError("This url already exists.")
+
         if url.endswith("Main_Page"):
             raise ValidationError("You should choose an article")
+
         url_parts = url.split("/")
         if len(url_parts) < 3:
             raise ValidationError("Invalid URL format")
         url_part = url_parts[2]
+
         if url_part not in AVAILABLE_SITES:
             raise ValidationError("You should choose an available source")
+
         if len(url_part) < AVAILABLE_SITES[url_part]:
             raise ValidationError(f"You should choose an article from {url_part}")
+
         if not self.scrup().check_if_article():
             raise ValidationError("Invalid URL. Choose an article")
+
         return url
 
     def save(self, commit=True):

@@ -75,7 +75,9 @@
               <div>
                 <br><br>
                 {% for topic in all_topics %}
-                  <button type="button" class="btn btn-info">{{ topic.title }}</button>
+                  <a href="{% url 'ai_news:article-list' %}">
+                    <button type="button" class="btn btn-info">{{ topic.title }}</button>
+                  </a>
                 {% endfor %}
                   {% if request.user.is_authenticated %}
                     <a href="{% url 'ai_news:topic-create' %}" class="btn btn-primary link-to-page">Add Topic</a>
