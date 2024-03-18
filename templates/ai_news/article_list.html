@@ -51,6 +51,9 @@
       </div>
     {% endif %}
   {% endfor %}
+      {% block pagination %}
+        {% include "includes/pagination.html" %}
+      {% endblock %}
 </div>
   
 {% endblock %}

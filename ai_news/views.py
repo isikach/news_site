@@ -34,6 +34,7 @@ def index(request):
 class ArticleListView(generic.ListView):
     model = Article
     template_name = "ai_news/article_list.html"
+    paginate_by = 12
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
