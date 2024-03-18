@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -115,13 +116,15 @@ class TopicCreateView(generic.CreateView):
     success_url = reverse_lazy("ai_news:index")
 
 
+@login_required
 def like_view(request, pk):
-    article = get_object_or_404(Article, id=pk)
-    if article.likes.filter(id=request.user.id).exists():
-        article.likes.remove(request.user)
-    else:
-        article.likes.add(request.user)
-    article.save()
+    if request.user.is_authenticated:
+        article = get_object_or_404(Article, id=pk)
+        if article.likes.filter(id=request.user.id).exists():
+            article.likes.remove(request.user)
+        else:
+            article.likes.add(request.user)
+        article.save()
     return redirect(request.META.get("HTTP_REFERER"))
 
 

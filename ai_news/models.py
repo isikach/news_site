@@ -17,6 +17,7 @@ class Topic(models.Model):
 
 
 class Article(models.Model):
+
     CHOICES = (("from_url", "from_url"), ("from_user", "from_user"))
     title = models.CharField(max_length=500, null=True, blank=True)
     body = models.TextField(null=True, blank=True)
