@@ -2,7 +2,7 @@
   {% if user.is_authenticated %}
     <br>
     <p><strong>User: {{ user.get_username }}</strong></p>
-    <form method="post" action="{% url 'logout' %}">
+    <form method="post" action="{% url 'ai_news:confirm-logout' %}">
       {% csrf_token %}
         <button type="submit" class="btn btn-secondary btn-block">Logout</button>
     </form>

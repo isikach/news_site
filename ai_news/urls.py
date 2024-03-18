@@ -14,6 +14,7 @@ from .views import (
     PublisherDetailView,
     TopicCreateView,
     like_view,
+    confirm_logout
 )
 
 urlpatterns = [
@@ -46,6 +47,7 @@ urlpatterns = [
     ),
     path("topics/create/", TopicCreateView.as_view(), name="topic-create"),
     path("likes/<int:pk>/", like_view, name="article_like"),
+    path("confirm_logout/", confirm_logout, name="confirm-logout")
 ]
 
 app_name = "ai_news"

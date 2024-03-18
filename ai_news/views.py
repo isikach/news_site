@@ -152,3 +152,7 @@ class AddCommentView(LoginRequiredMixin, generic.CreateView):
         return reverse_lazy(
             "ai_news:article-detail", kwargs={"pk": self.kwargs.get("pk")}
         )
+
+
+def confirm_logout(request):
+    return render(request, 'ai_news/confirm_logout.html')
