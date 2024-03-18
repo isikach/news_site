@@ -17,7 +17,6 @@ class Topic(models.Model):
 
 
 class Article(models.Model):
-
     CHOICES = (("from_url", "from_url"), ("from_user", "from_user"))
     title = models.CharField(max_length=500, null=True, blank=True)
     body = models.TextField(null=True, blank=True)
@@ -32,6 +31,7 @@ class Article(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+
     def __str__(self):
         return self.title
 

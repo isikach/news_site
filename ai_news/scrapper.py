@@ -85,6 +85,7 @@ class WashingtonPostsScrapper(GeneralScrapper):
 
 
 class MitScrapper(GeneralScrapper):
+
     TITLE_TAG = Tag("h1")
     NOT_ARTICLE = "Page not found"
     HREF_TAG = "hide-for-print"
