@@ -30,6 +30,8 @@ class Article(models.Model):
     created_by = models.CharField(max_length=10, choices=CHOICES, default="from_user")
     likes = models.ManyToManyField(Publisher, blank=True, related_name="articles_liked")
 
+    class Meta:
+        ordering = ['-pub_date']
     def __str__(self):
         return self.title
 

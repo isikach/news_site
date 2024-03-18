@@ -7,10 +7,74 @@ from .scrapper import AVAILABLE_SITES
 from .scrapper import MitScrapper, WikipediaScrapper, WashingtonPostsScrapper
 
 
+# class ArticleWithUrlForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         self.publisher_user = kwargs.pop("user")
+#         self.scrap = None
+#         super().__init__(*args, **kwargs)
+#         self.fields["topic"] = forms.ModelMultipleChoiceField(
+#             queryset=Topic.objects.all(), widget=forms.CheckboxSelectMultiple
+#         )
+#
+#     class Meta:
+#         model = Article
+#         fields = [
+#             "topic",
+#             "url",
+#         ]
+#
+#     def clean_url(self):
+#         breakpoint()
+#         url = self.cleaned_data["url"]
+#         if Article.objects.filter(url=url).exists():
+#             raise forms.ValidationError("This url already exists.")
+#
+#         if url.endswith("Main_Page"):
+#             raise ValidationError("You should choose an article")
+#
+#         url_parts = url.split("/")
+#         if len(url_parts) < 3:
+#             raise ValidationError("Invalid URL format")
+#
+#         url_part = url_parts[2]
+#         if url_part not in AVAILABLE_SITES:
+#             raise ValidationError("You should choose an available source")
+#
+#         if len(url_part) < AVAILABLE_SITES[url_part]:
+#             raise ValidationError(f"You should choose an article from {url_part}")
+#
+#         if not self.scrup().check_if_article():
+#             raise ValidationError("Invalid URL. Choose an article")
+#
+#         return url
+#
+#     def save(self, commit=True):
+#         instance = super().save(commit=False)
+#         instance.title, instance.body = self.parse_title_and_body_article()
+#         instance.publisher = self.publisher_user
+#         if commit:
+#             instance.save()
+#             topics = self.cleaned_data["topic"]
+#             for topic in topics:
+#                 instance.topic.add(topic)
+#         return instance
+#
+#     def scrup(self):
+#         url_with_parameters = self.cleaned_data["url"]
+#         if "en.wikipedia.org" in url_with_parameters:
+#             self.scrup = WikipediaScrapper(url_with_parameters)
+#         elif "www.washingtonpost.com" in url_with_parameters:
+#             self.scrup = WashingtonPostsScrapper(url_with_parameters)
+#         elif "news.mit.edu" in url_with_parameters:
+#             self.scrup = MitScrapper(url_with_parameters)
+#         return self.scrup
+#
+#     def parse_title_and_body_article(self):
+#         return self.scrup.parse_title(), self.scrup.parse_article()
+
 class ArticleWithUrlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.publisher_user = kwargs.pop("user")
-        self.scrap = None
         super().__init__(*args, **kwargs)
         self.fields["topic"] = forms.ModelMultipleChoiceField(
             queryset=Topic.objects.all(), widget=forms.CheckboxSelectMultiple
@@ -26,7 +90,7 @@ class ArticleWithUrlForm(forms.ModelForm):
     def clean_url(self):
         url = self.cleaned_data["url"]
         if Article.objects.filter(url=url).exists():
-            raise forms.ValidationError("This url already exists.")
+            raise forms.ValidationError("This URL already exists.")
 
         if url.endswith("Main_Page"):
             raise ValidationError("You should choose an article")
@@ -34,42 +98,48 @@ class ArticleWithUrlForm(forms.ModelForm):
         url_parts = url.split("/")
         if len(url_parts) < 3:
             raise ValidationError("Invalid URL format")
-        url_part = url_parts[2]
 
+        url_part = url_parts[2]
         if url_part not in AVAILABLE_SITES:
             raise ValidationError("You should choose an available source")
 
         if len(url_part) < AVAILABLE_SITES[url_part]:
             raise ValidationError(f"You should choose an article from {url_part}")
 
-        if not self.scrup().check_if_article():
-            raise ValidationError("Invalid URL. Choose an article")
+        # Викликаємо метод clean, щоб перевірити існування статті
+        self.clean()
 
         return url
 
+    def clean(self):
+        cleaned_data = super().clean()
+        url = cleaned_data.get("url")
+        if url:
+            scrup = self.scrup(url)
+            if not scrup.check_if_article():
+                raise ValidationError("Invalid URL. Choose an article")
+
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.title, instance.body = self.parse_title_and_body_article()
+        instance.title, instance.body = self.parse_title_and_body_article(instance.url)
         instance.publisher = self.publisher_user
         if commit:
             instance.save()
             topics = self.cleaned_data["topic"]
-            for topic in topics:
-                instance.topic.add(topic)
+            instance.topic.add(*topics)
         return instance
 
-    def scrup(self):
-        url_with_parameters = self.cleaned_data["url"]
-        if "en.wikipedia.org" in url_with_parameters:
-            self.scrup = WikipediaScrapper(url_with_parameters)
-        elif "www.washingtonpost.com" in url_with_parameters:
-            self.scrup = WashingtonPostsScrapper(url_with_parameters)
-        elif "news.mit.edu" in url_with_parameters:
-            self.scrup = MitScrapper(url_with_parameters)
-        return self.scrup
+    def scrup(self, url):
+        if "en.wikipedia.org" in url:
+            return WikipediaScrapper(url)
+        elif "www.washingtonpost.com" in url:
+            return WashingtonPostsScrapper(url)
+        elif "news.mit.edu" in url:
+            return MitScrapper(url)
 
-    def parse_title_and_body_article(self):
-        return self.scrup.parse_title(), self.scrup.parse_article()
+    def parse_title_and_body_article(self, url):
+        scrup = self.scrup(url)
+        return scrup.parse_title(), scrup.parse_article()
 
 
 class ArticleManuallyForm(forms.ModelForm):
