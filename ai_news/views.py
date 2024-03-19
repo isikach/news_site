@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
@@ -105,6 +106,11 @@ class PublisherCreateView(generic.CreateView):
     form_class = PublisherCreationForm
     success_url = reverse_lazy("ai_news:index")
     template_name = "ai_news/publisher_form.html"
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect("ai_news:index")
 
 
 class PublisherDetailView(generic.DetailView):
