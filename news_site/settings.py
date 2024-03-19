@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', "") != "False"
 
@@ -135,10 +136,10 @@ STATIC_URL = "static/"
 
 STATIC_ROOT = "staticfiles/"
 
-ASSETS_ROOT = "static/"
+ASSETS_ROOT = "/static/assets"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static/",
+    BASE_DIR / "static",
 ]
 
 # Default primary key field type
