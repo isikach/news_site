@@ -1,6 +1,14 @@
 AI Blog
 Welcome to the AI Blog! This blog serves as a platform to explore various topics related to artificial intelligence and machine learning.
 
+https://news-site-mate.onrender.com/
+
+You can use
+Login: user-test
+Password: 1waxzsq2
+
+Or just registrate)
+
 Features
 Comments
 Users can engage in discussions by leaving comments on blog posts. This feature allows for interactive communication and fosters a sense of community among readers.
