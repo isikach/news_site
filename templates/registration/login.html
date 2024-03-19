@@ -8,9 +8,8 @@
   {% endif %}
 
   <h1>Login
-    <a href="{% url 'ai_news:publisher-create' %}" class="btn btn-primary link-to-page">Registrate</a>
+    <a href="{% url 'django.contrib.auth.views.signup' %}" class="btn btn-primary link-to-page">Registrate</a>
   </h1>
-
 
   {% if next %}
     <p>Please login-in to see this page.</p>
