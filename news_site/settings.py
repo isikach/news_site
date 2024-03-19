@@ -22,12 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', "") != "False"
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "news-site-mate.onrender.com"]
+ALLOWED_HOSTS = ['127.0.0.1', "localhost", "news-site-mate.onrender.com"]
 
 # Application definition
 
@@ -132,7 +130,7 @@ SITE_ID = 1
 
 STATIC_URL = "static/"
 
-STATIC_ROOT = "staticfiles/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ASSETS_ROOT = "/static/assets"
 
