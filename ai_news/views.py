@@ -119,13 +119,11 @@ class TopicCreateView(generic.CreateView):
 
 @login_required
 def like_view(request, pk):
-    if request.user.is_authenticated:
-        article = get_object_or_404(Article, id=pk)
-        if article.likes.filter(id=request.user.id).exists():
-            article.likes.remove(request.user)
-        else:
-            article.likes.add(request.user)
-        article.save()
+    article = get_object_or_404(Article, id=pk)
+    if article.likes.filter(id=request.user.id).exists():
+        article.likes.remove(request.user)
+    else:
+        article.likes.add(request.user)
     return redirect(request.META.get("HTTP_REFERER"))
 
 
