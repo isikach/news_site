@@ -46,8 +46,6 @@ class ArticleWithUrlForm(forms.ModelForm):
         if len(url_part) < AVAILABLE_SITES[url_part]:
             raise ValidationError(f"You should choose an article from {url_part}")
 
-        self.clean()
-
         return url
 
     def clean(self):

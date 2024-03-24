@@ -41,7 +41,7 @@ urlpatterns = [
         "articles/<int:pk>/delete/", ArticleDeleteView.as_view(), name="article-delete"
     ),
     path("publishers/", PublishersListView.as_view(), name="publisher-list"),
-    path("publishers/create", PublisherCreateView.as_view(), name="publisher-create"),
+    path("publishers/create/", PublisherCreateView.as_view(), name="publisher-create"),
     path(
         "publishers/<int:pk>/", PublisherDetailView.as_view(), name="publisher-detail"
     ),

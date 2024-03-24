@@ -1,10 +1,16 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-  <h1>Are you sure</h1>
+  <br><br>
+  <h1>Are you sure?</h1>
+  <br>
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <a href="{% url "ai_news:index" %}" class="btn btn-info">Cancel</a>
-    <input type="submit" value="Yes" class="btn btn-danger">
+    <button type="button" class="btn btn-info">
+      <a href="{% url "ai_news:index" %}">Cancel</a>
+    </button>
+    <input type="button" value="Yes" class="btn btn-danger">
+
+    
   </form>
 {% endblock %}

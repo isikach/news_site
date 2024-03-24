@@ -8,8 +8,9 @@
     {{article.pub_date}}
   </p>
   <div>
-    {{ article.body }}
-    <br><br><br>
+    {% for paragraph in article.split_into_paragraphs %}
+  <p>{{ paragraph }}</p>
+{% endfor %}
     {% if article.url %}
       <strong> Source: </strong><a href = {{article.url}}> {{article.url}}</a>
     {% endif %}
@@ -17,7 +18,7 @@
   <br/><br/>
   <br/>
   <form action="{% url "ai_news:article_like" article.id %}"
-        method="post"> 
+        method="post">
     {% csrf_token %}
     <button type="submit" name="article_id" value="{{ article.id }}">
       {% if user in article.likes.all %}
@@ -30,7 +31,7 @@
   <br>
   <h2><strong>Comments</strong></h2>
   {% if not article.comments.all %}
-    <p> 
+    <p>
       Not comments yet...
       <button type="button" class="btn btn-primary">
         <a href="{% url "ai_news:comment-create" article.id %}">Add first comment</a>

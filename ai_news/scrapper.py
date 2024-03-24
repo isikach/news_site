@@ -24,7 +24,6 @@ class GeneralScrapper:
     HREF_TAG = "hide-for-print"
     NOT_ARTICLE = "Not found"
 
-
     def __init__(
         self,
         url: str,
@@ -53,7 +52,8 @@ class GeneralScrapper:
 
     def parse_article(self) -> str:
         row_article = self.soup.find_all(
-            self.article_tags.tag_name, class_=self.article_tags.class_name, limit=5
+            self.article_tags.tag_name,
+            class_=self.article_tags.class_name
         )
         all_text = []
         for p in row_article:

@@ -38,6 +38,9 @@ class Article(models.Model):
     def total_likes(self):
         return self.likes.count()
 
+    def split_into_paragraphs(self):
+        return self.body.split('\n')
+
 
 class Comment(models.Model):
     article = models.ForeignKey(
