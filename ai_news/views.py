@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -24,7 +26,7 @@ def index(request):
         "num_articles": num_articles,
         "num_publisher": num_publishers,
         "num_topics": num_topics,
-        "all_topics": all_topics
+        "all_topics": all_topics,
     }
 
     return render(request, "ai_news/index.html", context=context)
@@ -33,13 +35,12 @@ def index(request):
 class ArticleListView(generic.ListView):
     model = Article
     template_name = "ai_news/article_list.html"
+    paginate_by = 12
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
         body = self.request.GET.get("body", "")
-        context["search_form"] = ArticleSearchForm(
-            initial={"body": body}
-        )
+        context["search_form"] = ArticleSearchForm(initial={"body": body})
         return context
 
     def get_queryset(self):
@@ -106,6 +107,11 @@ class PublisherCreateView(generic.CreateView):
     success_url = reverse_lazy("ai_news:index")
     template_name = "ai_news/publisher_form.html"
 
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect("ai_news:index")
+
 
 class PublisherDetailView(generic.DetailView):
     model = Publisher
@@ -117,14 +123,14 @@ class TopicCreateView(generic.CreateView):
     success_url = reverse_lazy("ai_news:index")
 
 
+@login_required
 def like_view(request, pk):
     article = get_object_or_404(Article, id=pk)
     if article.likes.filter(id=request.user.id).exists():
         article.likes.remove(request.user)
     else:
         article.likes.add(request.user)
-    article.save()
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 class AddCommentView(LoginRequiredMixin, generic.CreateView):
@@ -143,8 +149,14 @@ class AddCommentView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_article(self):
-        article_id = self.kwargs.get('pk')
+        article_id = self.kwargs.get("pk")
         return get_object_or_404(Article, pk=article_id)
 
     def get_success_url(self):
-        return reverse_lazy('ai_news:article-detail', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse_lazy(
+            "ai_news:article-detail", kwargs={"pk": self.kwargs.get("pk")}
+        )
+
+
+def confirm_logout(request):
+    return render(request, 'ai_news/confirm_logout.html')

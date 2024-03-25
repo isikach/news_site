@@ -2,12 +2,16 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
+  <br><br>
   <h1>{{ object|yesno:"Update,Create" }} Article</h1>
-<form method="post">
+  <p> You can get it form verified website <br>   👇 <br>
+      <button type="button" class="btn btn-primary">
+        <a href="{% url 'ai_news:article-create-with-url' %}">Try it...</a>
+      </button>
+  </p>
+  <p>Or you can add it manually</p>
+  <form method="post">
     {% csrf_token %}
-    <p> You can get article from other source
-    <a href="{% url 'ai_news:article-create-with-url' %}">Try it...</a>
-    </p>
     {{ form|crispy }}
     {{ comment_formset.management_form }}
 

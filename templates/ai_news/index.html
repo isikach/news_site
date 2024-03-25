@@ -3,6 +3,7 @@
 {% block title %} Presentation {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
+
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block body_class %} index-page {% endblock body_class %}
@@ -10,7 +11,7 @@
 {% block content %}
 
   <header class="header-2">
-    <div class="page-header section-height-75 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+    <div class="page-header section-height-75 relative" style="background-image:url('{{ ASSETS_ROOT }}/assets/img/curved-images/curved-11.jpg')">
       <div class="container">
         <div class="row">
           <div class="col-lg-7 text-center mx-auto">
@@ -18,7 +19,6 @@
               AI Insights: Exploring Innovation and Discovery
             </h1>
             <p class="lead text-white mt-3">
-              Embark on a journey into the realm of artificial intelligence with our website, where you'll uncover the latest technological breakthroughs, ideas, and approaches shaping the future.
               <br />
             </p>
           </div>
@@ -75,7 +75,9 @@
               <div>
                 <br><br>
                 {% for topic in all_topics %}
-                  <button type="button" class="btn btn-info">{{ topic.title }}</button>
+                  <a href="{% url 'ai_news:article-list' %}">
+                    <button type="button" class="btn btn-info">{{ topic.title }}</button>
+                  </a>
                 {% endfor %}
                   {% if request.user.is_authenticated %}
                     <a href="{% url 'ai_news:topic-create' %}" class="btn btn-primary link-to-page">Add Topic</a>
@@ -93,14 +95,14 @@
 <!-- Specific JS goes HERE --> 
 {% block javascripts %}
 
-  <script src="{{ ASSETS_ROOT }}/js/plugins/countup.min.js"></script>
-  <script src="{{ ASSETS_ROOT }}/js/plugins/choices.min.js"></script>
-  <script src="{{ ASSETS_ROOT }}/js/plugins/rellax.min.js"></script>
-  <script src="{{ ASSETS_ROOT }}/js/plugins/tilt.min.js"></script>
-  <script src="{{ ASSETS_ROOT }}/js/plugins/choices.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/plugins/countup.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/plugins/choices.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/plugins/rellax.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/plugins/tilt.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/plugins/choices.min.js"></script>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTTfWur0PDbZWPr7Pmq8K3jiDp0_xUziI"></script>
-  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  <script src="{{ ASSETS_ROOT }}/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
   <script type="text/javascript">
     if (document.getElementById('state1')) {
       const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));

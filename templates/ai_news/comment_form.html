@@ -5,7 +5,7 @@
   <h1>Add Comment</h1>
   <form method="post">
     {% csrf_token %}
-    {{ form|crispy }}
+    {{ form| crispy }}
     <button type="submit">Save</button>
   </form>
 {% endblock %}

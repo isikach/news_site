@@ -1,4 +1,3 @@
-<!-- publisher_detail.html -->
 {% extends 'layouts/base.html' %}
 
 {% block content %}
@@ -50,7 +49,7 @@
     <p><strong>Articles by {{ publisher.username }}:</strong></p>
     <ul>
       {% for article in publisher.articles.all %}
-        <li><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></li>
+        <li><strong><a href="{% url 'ai_news:article-detail' pk=article.pk %}">{{ article.title }}</a></strong></li>
       {% empty %}
         <li>No articles found.</li>
       {% endfor %}
